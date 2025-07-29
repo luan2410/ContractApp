@@ -82,6 +82,9 @@ export interface Contract {
   title: string;
   description: string;
   status: 'draft' | 'pending' | 'approved' | 'rejected' | 'signed' | 'expired';
+  isBasedOnExisting?: boolean;
+  parentContractId?: string;
+  contractCategory: 'internal' | 'commercial';
   uploadDate: string;
   reviewDate?: string;
   expiryDate?: string;
@@ -114,14 +117,33 @@ export interface Contract {
           address: string;
           representative: string;
           role: 'A' | 'B';
+          taxCode?: string;
+          legalRepresentative?: string;
         }>;
       };
       purpose: string;
+      workScope: {
+        description: string;
+        technicalRequirements?: string;
+        qualityRequirements?: string;
+        milestones?: Array<{
+          name: string;
+          deadline: string;
+          deliverables: string;
+        }>;
+      };
       financialInfo: {
         totalValue: string;
         unitPrice?: string;
         paymentMethod: string;
         paymentSchedule: string;
+        currency: string;
+        paymentTerms: string;
+      };
+      deliveryAndAcceptance: {
+        deliveryDate?: string;
+        acceptanceCriteria: string;
+        acceptanceProcess: string;
       };
       timeline: {
         duration: string;
@@ -131,6 +153,11 @@ export interface Contract {
       obligations: {
         partyA: string[];
         partyB: string[];
+        confidentiality?: string;
+        penalties?: Array<{
+          violation: string;
+          penalty: string;
+        }>;
       };
       warranties: {
         warranty?: string;
@@ -140,10 +167,35 @@ export interface Contract {
       disputeResolution: {
         jurisdiction: string;
         venue: string;
+        arbitration?: string;
+        negotiationFirst?: boolean;
+      };
+      specialClauses?: {
+        amendments?: string;
+        termination?: string;
+        forcemajeure?: string;
+      };
+      signatures: {
+        partyASignature?: {
+          name: string;
+          position: string;
+          date?: string;
+        };
+        partyBSignature?: {
+          name: string;
+          position: string;
+          date?: string;
+        };
+        witnessSignature?: {
+          name: string;
+          position: string;
+          date?: string;
+        };
       };
       attachments?: string[];
       currentStatus?: string;
       notes?: string;
+      keyHighlights?: string[];
     };
     fullText: string;
   };
