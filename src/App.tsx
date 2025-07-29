@@ -6,6 +6,9 @@ import { Contract, ContractVersion, ContractComment, ContractTag, ApprovalStep, 
 import { User as UserType, AuthState, LoginCredentials, RegisterData, TimeFilter } from './types/user';
 import { VersionHistory } from './components/VersionHistory';
 import { VersionComparison } from './components/VersionComparison';
+import { ContractUpload } from './components/ContractUpload';
+import { ApprovalWorkflowModal } from './components/ApprovalWorkflowModal';
+import { ContractDetailView } from './components/ContractDetailView';
 import { ESignaturePanel } from './components/ESignaturePanel';
 import { ContractReminders } from './components/ContractReminders';
 import { AdvancedDashboard } from './components/AdvancedDashboard';
@@ -164,10 +167,12 @@ function App() {
   const [contracts, setContracts] = useState<Contract[]>([
     {
       id: '1',
-      title: 'Hợp đồng mua bán thiết bị văn phòng',
-      description: 'Hợp đồng cung cấp thiết bị văn phòng cho chi nhánh Hà Nội',
-      status: 'pending',
+      title: 'Hợp đồng cung cấp dịch vụ IT',
+      description: 'Hợp đồng cung cấp dịch vụ phát triển phần mềm cho công ty ABC',
+      contractCategory: 'commercial',
+      status: 'approved',
       uploadDate: '2024-01-15',
+      reviewDate: '2024-01-20',
       expiryDate: '2024-07-15',
       tags: [
         { id: '1', name: 'Mua sắm', color: 'blue', category: 'Loại' },
@@ -214,28 +219,122 @@ function App() {
         }
       ],
       extractedInfo: {
-        contractType: 'Mua bán',
-        parties: ['Công ty ABC', 'Công ty XYZ'],
+        contractType: 'Dịch vụ IT',
+        parties: ['Công ty TNHH ABC', 'Công ty Phần mềm XYZ'],
         value: '500.000.000 VND',
         numericValue: 500000000,
-        duration: '6 tháng',
-        summary: 'Hợp đồng cung cấp thiết bị văn phòng bao gồm máy tính, máy in, bàn ghế làm việc.',
-        fullText: 'Nội dung đầy đủ của hợp đồng để tìm kiếm toàn văn...'
+        duration: '12 tháng',
+        summary: 'Hợp đồng cung cấp dịch vụ phát triển ứng dụng web và mobile cho công ty ABC trong thời gian 12 tháng.',
+        detailedSummary: {
+          generalInfo: {
+            contractName: 'Hợp đồng cung cấp dịch vụ IT',
+            contractNumber: 'HD-IT-2024-001',
+            signDate: '2024-01-15',
+            effectiveDate: '2024-01-15',
+            expiryDate: '2025-01-15',
+            parties: [
+              {
+                name: 'Công ty TNHH ABC',
+                address: '123 Đường ABC, Quận 1, TP.HCM',
+                representative: 'Nguyễn Văn A',
+                role: 'A',
+                taxCode: '0123456789'
+              },
+              {
+                name: 'Công ty Phần mềm XYZ',
+                address: '456 Đường XYZ, Quận 3, TP.HCM',
+                representative: 'Trần Thị B',
+                role: 'B',
+                taxCode: '0987654321'
+              }
+            ]
+          },
+          purpose: 'Cung cấp dịch vụ phát triển ứng dụng web và mobile theo yêu cầu của khách hàng',
+          workScope: {
+            description: 'Phát triển ứng dụng web quản lý bán hàng và ứng dụng mobile tương ứng',
+            technicalRequirements: 'ReactJS, Node.js, MongoDB, React Native',
+            qualityRequirements: 'Đảm bảo 99% uptime, tốc độ tải trang < 3s',
+            milestones: [
+              {
+                name: 'Hoàn thành thiết kế UI/UX',
+                deadline: '2024-03-15',
+                deliverables: 'File thiết kế Figma và prototype'
+              },
+              {
+                name: 'Hoàn thành phát triển web app',
+                deadline: '2024-06-15',
+                deliverables: 'Ứng dụng web hoàn chỉnh'
+              }
+            ]
+          },
+          financialInfo: {
+            totalValue: '500.000.000 VND',
+            paymentMethod: 'Chuyển khoản',
+            paymentSchedule: 'Thanh toán theo từng milestone',
+            currency: 'VND',
+            paymentTerms: 'Thanh toán trong vòng 15 ngày sau khi nghiệm thu'
+          },
+          deliveryAndAcceptance: {
+            deliveryDate: '2024-12-15',
+            acceptanceCriteria: 'Ứng dụng hoạt động đúng yêu cầu, không có lỗi nghiêm trọng',
+            acceptanceProcess: 'Khách hàng test trong 7 ngày, ký biên bản nghiệm thu'
+          },
+          timeline: {
+            duration: '12 tháng',
+            milestones: ['Thiết kế - 3 tháng', 'Phát triển - 6 tháng', 'Test & Deploy - 3 tháng'],
+            terminationConditions: 'Vi phạm nghiêm trọng hợp đồng'
+          },
+          obligations: {
+            partyA: ['Cung cấp yêu cầu chi tiết', 'Thanh toán đúng hạn', 'Hỗ trợ test'],
+            partyB: ['Phát triển đúng yêu cầu', 'Bảo hành 12 tháng', 'Đào tạo sử dụng'],
+            penalties: [
+              {
+                violation: 'Chậm tiến độ',
+                penalty: '1% giá trị hợp đồng/ngày'
+              }
+            ]
+          },
+          warranties: {
+            warranty: 'Bảo hành 12 tháng',
+            confidentiality: 'Bảo mật thông tin khách hàng',
+            penalties: 'Phạt 10% giá trị hợp đồng nếu vi phạm'
+          },
+          disputeResolution: {
+            jurisdiction: 'Tòa án Nhân dân TP.HCM',
+            venue: 'TP.HCM',
+            arbitration: 'Trung tâm Trọng tài Quốc tế Việt Nam',
+            negotiationFirst: true
+          },
+          signatures: {
+            partyASignature: {
+              name: 'Nguyễn Văn A',
+              position: 'Giám đốc',
+              date: '2024-01-15'
+            },
+            partyBSignature: {
+              name: 'Trần Thị B',
+              position: 'Giám đốc',
+              date: '2024-01-15'
+            }
+          },
+          keyHighlights: [
+            'Hợp đồng có giá trị cao 500 triệu VND cần được giám sát chặt chẽ',
+            'Yêu cầu bảo hành 12 tháng sau khi nghiệm thu',
+            'Phạt 1% giá trị hợp đồng mỗi ngày chậm tiến độ',
+            'Bảo mật thông tin khách hàng là ưu tiên hàng đầu'
+          ]
+        },
+        fullText: 'Nội dung đầy đủ của hợp đồng...'
       }
     },
     {
       id: '2',
-      title: 'Hợp đồng dịch vụ bảo trì',
-      description: 'Hợp đồng bảo trì hệ thống IT',
-      status: 'approved',
-      uploadDate: '2024-01-10',
-      reviewDate: '2024-01-12',
-      expiryDate: '2025-01-10',
-      reviewer: 'Nguyễn Văn A',
-      tags: [
-        { id: '3', name: 'Dịch vụ', color: 'purple', category: 'Loại' },
-        { id: '4', name: 'IT', color: 'indigo', category: 'Danh mục' }
-      ],
+      title: 'Hợp đồng thuê văn phòng',
+      description: 'Hợp đồng thuê không gian văn phòng tại tòa nhà DEF',
+      contractCategory: 'internal',
+      status: 'pending',
+      uploadDate: '2024-01-20',
+      tags: [availableTags[1], availableTags[3]],
       versions: [
         {
           id: 'v2',
@@ -262,13 +361,49 @@ function App() {
       currentStep: 0,
       reminders: [],
       extractedInfo: {
-        contractType: 'Dịch vụ',
-        parties: ['Công ty DEF', 'Công ty GHI'],
+        contractType: 'Thuê văn phòng',
+        parties: ['Công ty TNHH ABC', 'Công ty Bất động sản DEF'],
         value: '120.000.000 VND',
         numericValue: 120000000,
-        duration: '12 tháng',
-        summary: 'Hợp đồng bảo trì hệ thống máy chủ và phần mềm quản lý.',
-        fullText: 'Nội dung đầy đủ của hợp đồng bảo trì hệ thống IT...'
+        duration: '24 tháng',
+        summary: 'Hợp đồng thuê văn phòng diện tích 200m2 tại tầng 5 tòa nhà DEF.',
+        fullText: 'Nội dung đầy đủ của hợp đồng thuê văn phòng...'
+      }
+    },
+    {
+      id: '3',
+      title: 'Hợp đồng mua sắm thiết bị',
+      description: 'Hợp đồng mua sắm máy tính và thiết bị văn phòng',
+      contractCategory: 'commercial',
+      status: 'rejected',
+      uploadDate: '2024-01-25',
+      reviewDate: '2024-01-28',
+      reviewer: 'Phạm Văn D',
+      comments: 'Giá cả chưa hợp lý, cần thương lượng lại',
+      tags: [availableTags[0], availableTags[2]],
+      versions: [
+        {
+          id: 'v3',
+          version: 1,
+          title: 'Phiên bản ban đầu',
+          content: 'Nội dung hợp đồng mua sắm...',
+          changes: 'Tạo mới',
+          createdAt: '2024-01-25T08:00:00',
+          createdBy: 'Hoàng Thị E'
+        }
+      ],
+      currentVersion: 1,
+      approvalSteps: [],
+      currentStep: 0,
+      reminders: [],
+      extractedInfo: {
+        contractType: 'Mua sắm',
+        parties: ['Công ty TNHH ABC', 'Công ty Thiết bị GHI'],
+        value: '80.000.000 VND',
+        numericValue: 80000000,
+        duration: '1 tháng',
+        summary: 'Hợp đồng mua 50 máy tính và các thiết bị văn phòng khác.',
+        fullText: 'Nội dung đầy đủ của hợp đồng mua sắm...'
       }
     }
   ]);
@@ -319,6 +454,9 @@ function App() {
   const [editingContract, setEditingContract] = useState<Contract | null>(null);
   const [showVersionHistory, setShowVersionHistory] = useState(false);
   const [showVersionComparison, setShowVersionComparison] = useState<{ v1: ContractVersion; v2: ContractVersion } | null>(null);
+  const [showUpload, setShowUpload] = useState(false);
+  const [showApprovalModal, setShowApprovalModal] = useState<Contract | null>(null);
+  const [showDetailView, setShowDetailView] = useState<Contract | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [filterTags, setFilterTags] = useState<string[]>([]);
@@ -557,6 +695,79 @@ function App() {
     }
   };
 
+  const handleUpload = (file: File) => {
+    // Simulate file upload and OCR processing
+    console.log('Uploading file:', file.name);
+  };
+
+  const handleContractUpload = (file: File, isBasedOnExisting: boolean, parentContractId?: string) => {
+    // Create new contract
+    const newContract: Contract = {
+      id: Date.now().toString(),
+      title: file.name.replace(/\.[^/.]+$/, ""),
+      description: 'Hợp đồng được tải lên từ file',
+      contractCategory: 'commercial',
+      status: 'draft',
+      uploadDate: new Date().toISOString(),
+      tags: [],
+      versions: [{
+        id: '1',
+        version: 1,
+        title: file.name.replace(/\.[^/.]+$/, ""),
+        content: 'Nội dung sẽ được trích xuất từ OCR...',
+        changes: 'Phiên bản đầu tiên',
+        createdAt: new Date().toISOString(),
+        createdBy: authState.user?.name || 'Unknown'
+      }],
+      currentVersion: 1,
+      approvalSteps: [],
+      currentStep: 0,
+      reminders: [],
+      isBasedOnExisting,
+      parentContractId,
+      extractedInfo: {
+        contractType: 'Đang xử lý...',
+        parties: [],
+        value: 'Đang xử lý...',
+        numericValue: 0,
+        duration: 'Đang xử lý...',
+        summary: 'Đang xử lý OCR để trích xuất thông tin...',
+        fullText: 'Đang xử lý...'
+      },
+      file
+    };
+
+    setContracts(prev => [newContract, ...prev]);
+    setShowUpload(false);
+  };
+
+  const handleSendForApproval = (contract: Contract, approvers: Array<{ userId: string; role: string; stepNumber: number }>) => {
+    const approvalSteps: ApprovalStep[] = approvers.map(approver => {
+      const user = users.find(u => u.id === approver.userId);
+      return {
+        id: `step-${approver.stepNumber}`,
+        stepNumber: approver.stepNumber,
+        approverRole: approver.role,
+        approverLevel: user?.approvalLevel || 1,
+        approverName: user?.name,
+        status: 'pending' as const
+      };
+    });
+
+    setContracts(prev => prev.map(c => 
+      c.id === contract.id 
+        ? { 
+            ...c, 
+            status: 'pending' as const, 
+            approvalSteps,
+            currentStep: 0
+          }
+        : c
+    ));
+    
+    setShowApprovalModal(null);
+  };
+
   const handleSubmitForApproval = (contractId: string) => {
     setContracts(contracts.map(c => {
       if (c.id === contractId) {
@@ -591,6 +802,45 @@ function App() {
       } : c
     ));
     setSelectedContract(null);
+  };
+
+  const handleManualContractSave = (contractData: Omit<Contract, 'id' | 'status' | 'uploadDate' | 'versions' | 'currentVersion' | 'approvalSteps' | 'currentStep' | 'reminders'>) => {
+    const newContract: Contract = {
+      ...contractData,
+      id: Date.now().toString(),
+      status: 'draft',
+      uploadDate: new Date().toISOString(),
+      versions: [{
+        id: '1',
+        version: 1,
+        title: contractData.title,
+        content: contractData.extractedInfo?.fullText || '',
+        changes: 'Phiên bản đầu tiên',
+        createdAt: new Date().toISOString(),
+        createdBy: authState.user?.name || 'Unknown'
+      }],
+      currentVersion: 1,
+      approvalSteps: [],
+      currentStep: 0,
+      reminders: []
+    };
+
+    setContracts(prev => [newContract, ...prev]);
+    setShowManualCreator(false);
+  };
+
+  const handleDeleteContract = (contractId: string) => {
+    if (window.confirm('Bạn có chắc chắn muốn xóa hợp đồng này?')) {
+      setContracts(prev => prev.filter(c => c.id !== contractId));
+    }
+  };
+
+  const handleResubmitContract = (contractId: string) => {
+    setContracts(prev => prev.map(c => 
+      c.id === contractId 
+        ? { ...c, status: 'draft' as const, comments: undefined, reviewDate: undefined }
+        : c
+    ));
   };
 
   const filteredContracts = contracts.filter(contract => {
@@ -917,6 +1167,24 @@ function App() {
               <option key={tag.id} value={tag.id}>{tag.name}</option>
             ))}
           </select>
+          {authState.user?.permissions.canUpload && (
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => setShowUpload(true)}
+                className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                <Upload className="w-4 h-4" />
+                <span>Tải lên</span>
+              </button>
+              <button
+                onClick={() => setShowManualCreator(true)}
+                className="flex items-center space-x-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Tạo thủ công</span>
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -986,7 +1254,7 @@ function App() {
                   <td className="px-6 py-4">
                     <div className="flex space-x-2">
                       <button
-                        onClick={() => setSelectedContract(contract)}
+                        onClick={() => setShowDetailView(contract)}
                         className="text-blue-600 hover:text-blue-800 text-sm font-medium"
                       >
                         Xem chi tiết
@@ -1001,10 +1269,18 @@ function App() {
                       )}
                       {contract.status === 'draft' && (
                         <button
-                          onClick={() => handleSubmitForApproval(contract.id)}
+                          onClick={() => setShowApprovalModal(contract)}
                           className="text-green-600 hover:text-green-800 text-sm font-medium"
                         >
                           Gửi duyệt
+                        </button>
+                      )}
+                      {contract.status === 'rejected' && (
+                        <button
+                          onClick={() => handleResubmitContract(contract.id)}
+                          className="text-orange-600 hover:text-orange-800 text-sm font-medium"
+                        >
+                          Gửi lại
                         </button>
                       )}
                       {contract.status === 'approved' && contract.finalPdfUrl && (
@@ -1354,34 +1630,40 @@ function App() {
       
       {selectedContract && renderContractDetail()}
       
+      {showUpload && (
+        <ContractUpload
+          onUpload={handleContractUpload}
+          onClose={() => setShowUpload(false)}
+          existingContracts={contracts}
+        />
+      )}
+
+      {showApprovalModal && (
+        <ApprovalWorkflowModal
+          contract={showApprovalModal}
+          users={users}
+          onSubmit={(approvers) => handleSendForApproval(showApprovalModal, approvers)}
+          onClose={() => setShowApprovalModal(null)}
+        />
+      )}
+
+      {showDetailView && (
+        <ContractDetailView
+          contract={showDetailView}
+          onBack={() => setShowDetailView(null)}
+          onEdit={() => {
+            setSelectedContract(showDetailView);
+            setShowDetailView(null);
+            setShowEditor(true);
+          }}
+          canEdit={showDetailView.status === 'draft' || showDetailView.status === 'rejected' || authState.user?.role === 'admin'}
+        />
+      )}
+
       {showManualCreator && (
         <ManualContractCreator
           onClose={() => setShowManualCreator(false)}
-          onSave={(contractData) => {
-            const newContract: Contract = {
-              ...contractData,
-              id: Date.now().toString(),
-              status: 'draft',
-              uploadDate: new Date().toISOString().split('T')[0],
-              versions: [
-                {
-                  id: 'v1',
-                  version: 1,
-                  title: 'Phiên bản ban đầu',
-                  content: contractData.extractedInfo?.fullText || '',
-                  changes: 'Tạo mới thủ công',
-                  createdAt: new Date().toISOString(),
-                  createdBy: authState.user?.name || 'Current User'
-                }
-              ],
-              currentVersion: 1,
-              approvalSteps: generateApprovalSteps(contractData.extractedInfo?.numericValue || 0),
-              currentStep: 0,
-              reminders: []
-            };
-            setContracts([...contracts, newContract]);
-            setShowManualCreator(false);
-          }}
+          onSave={handleManualContractSave}
           availableTags={availableTags}
         />
       )}
